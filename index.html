@@ -1,1 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+  <meta name="theme-color" content="#163d30">
+  <title>MC Rangers | Hike Guide</title>
 
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #eef2ec;
+      color: #183428;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    button, select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button:focus-visible,
+    select:focus-visible {
+      outline: 3px solid #d69e25;
+      outline-offset: 3px;
+    }
+
+    .app {
+      max-width: 520px;
+      margin: auto;
+      padding: 20px 16px 32px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      margin: 0 0 5px;
+    }
+
+    h1 {
+      font-size: 25px;
+      margin: 0;
+    }
+
+    .badge {
+      background: #dbe7db;
+      padding: 8px 12px;
+      border-radius: 30px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .notice {
+      font-size: 13px;
+      line-height: 1.5;
+      background: #fff4d8;
+      color: #654b13;
+      padding: 12px;
+      border-radius: 12px;
+    }
+
+    .route-label {
+      display: block;
+      margin: 18px 0 7px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    select {
+      width: 100%;
+      min-height: 46px;
+      padding: 10px;
+      border: 1px solid #c5d1c4;
+      border-radius: 12px;
+      background: white;
+      color: #183428;
+    }
+
+    .progress-row {
+      display: flex;
+      justify-content: space-between;
+      margin: 18px 0 8px;
+      font-size: 13px;
+    }
+
+    progress {
+      display: block;
+      width: 100%;
+      height: 7px;
+      accent-color: #2a6a48;
+      margin-bottom: 15px;
+    }
+
+    .card {
+      overflow: hidden;
+      border-radius: 22px;
+      background: white;
+      box-shadow: 0 12px 35px #18342812;
+      touch-action: pan-y pinch-zoom;
+      transition: transform 0.18s ease, opacity 0.18s ease;
+    }
+
+    .photo-button {
+      display: block;
+      width: 100%;
+      border: 0;
+      padding: 0;
+      background: #17271f;
+    }
+
+    .photo-button img {
+      display: block;
+      width: 100%;
+      height: min(55svh, 580px);
+      object-fit: contain;
+    }
+
+    .image-error {
+      padding: 20px;
+      margin: 0;
+      color: #8a211b;
+      background: #fff0ed;
+      font-size: 14px;
+    }
+
+    .card-body {
+      padding: 20px;
+    }
+
+    .eyebrow {
+      margin: 0 0 7px;
+      color: #53735c;
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    h2 {
+      margin: 0 0 9px;
+      font-size: 23px;
+    }
+
+    .instruction {
+      margin: 0;
+      line-height: 1.6;
+      font-size: 16px;
+    }
+
+    .landmark {
+      margin: 15px 0 0;
+      padding: 12px;
+      background: #eff5ee;
+      border-radius: 12px;
+      line-height: 1.5;
+      font-size: 14px;
+    }
+
+    .controls {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .controls button {
+      border: 0;
+      border-radius: 14px;
+      min-height: 52px;
+      padding: 12px;
+      font-weight: 700;
+    }
+
+    #previous {
+      background: #dce6da;
+      color: #183428;
+    }
+
+    #next {
+      background: #163d30;
+      color: white;
+    }
+
+    .controls button:disabled {
+      opacity: 0.4;
+      cursor: default;
+    }
+
+    .hint, .footer {
+      text-align: center;
+      font-size: 12px;
+      color: #5c6d60;
+      line-height: 1.6;
+    }
+
+    dialog {
+      width: min(96vw, 900px);
+      max-height: 94svh;
+      padding: 12px;
+      border: 0;
+      border-radius: 16px;
+      background: #15241c;
+      color: white;
+    }
+
+    dialog::backdrop {
+      background: #000c;
+    }
+
+    .close {
+      display: block;
+      margin: 0 0 10px auto;
+      padding: 10px 18px;
+      border: 0;
+      border-radius: 8px;
+      background: white;
+    }
+
+    dialog img {
+      display: block;
+      width: 100%;
+      max-height: 78svh;
+      object-fit: contain;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="app">
+    <header>
+      <div>
+        <p class="brand">MC RANGERS</p>
+        <h1 id="route-title">Hike Guide</h1>
+      </div>
+      <span class="badge">Photo guide</span>
+    </header>
+
+    <p class="notice">
+      Draft route: verify every direction before sharing.
+      This guide does not track your location.
+      Internet access is required for this version.
+    </p>
+
+    <label class="route-label" for="checkpoint">
+      Jump to a checkpoint
+    </label>
+
+    <select id="checkpoint"></select>
+
+    <div class="progress-row">
+      <span id="counter"></span>
+      <span id="direction"></span>
+    </div>
+
+    <progress id="progress" value="1" max="2">
+      Checkpoint progress
+    </progress>
+
+    <article class="card" id="card">
+      <button
+        class="photo-button"
+        id="expand"
+        type="button"
+        aria-label="Enlarge checkpoint photo"
+      >
+        <img id="photo" alt="" draggable="false">
+      </button>
+
+      <p id="image-error" class="image-error" hidden></p>
+
+      <div class="card-body" aria-live="polite">
+        <p class="eyebrow" id="step-label"></p>
+        <h2 id="step-title"></h2>
+        <p class="instruction" id="instruction"></p>
+        <p class="landmark" id="landmark"></p>
+      </div>
+    </article>
+
+    <div class="controls">
+      <button id="previous" type="button">← Previous</button>
+      <button id="next" type="button">Next →</button>
+    </div>
+
+    <p class="hint">
+      Swipe left for next · Swipe right for previous<br>
+      Tap the photo to enlarge
+    </p>
+
+    <p class="footer">
+      Checkpoint viewed, not location confirmed.<br>
+      Match each photo to your surroundings before continuing.
+    </p>
+  </main>
+
+  <dialog id="viewer" aria-label="Enlarged checkpoint photo">
+    <button class="close" id="close-viewer" type="button">
+      Close
+    </button>
+    <img id="large-photo" alt="">
+  </dialog>
+
+  <script>
+    // EDIT THIS SECTION TO CHANGE YOUR ROUTE.
+    const route = {
+      id: "demo-route-v1",
+      name: "Hike Photo Guide",
+      direction: "Start → Finish",
+
+      steps: [
+        {
+          image: "step1.jpg",
+          title: "Follow the pavement",
+          instruction:
+            "Continue along the pavement in the direction of the white arrows.",
+          landmark:
+            "Look for the hillside ahead and the shops on your right.",
+          alt:
+            "Annotated pavement photo showing the direction towards the hillside."
+        },
+        {
+          image: "step2.jpg",
+          title: "Find the entrance",
+          instruction:
+            "Find the entrance shown in the photo. Confirm the correct access towards the stairs before continuing.",
+          landmark:
+            "Look for the driveway between the tall building and the low white building.",
+          alt:
+            "Annotated entrance photo with arrows pointing towards the stairs."
+        }
+      ]
+    };
+
+    const $ = (id) => document.getElementById(id);
+    const storageKey = "hike-guide:" + route.id;
+    let current = 0;
+    let moving = false;
+    let suppressClickUntil = 0;
+
+    try {
+      const saved = Number(localStorage.getItem(storageKey));
+
+      if (
+        Number.isInteger(saved) &&
+        saved >= 0 &&
+        saved < route.steps.length
+      ) {
+        current = saved;
+      }
+    } catch {
+      // The guide still works if browser storage is unavailable.
+    }
+
+    $("route-title").textContent = route.name;
+    $("direction").textContent = route.direction;
+    $("progress").max = route.steps.length;
+
+    route.steps.forEach((step, index) => {
+      const option = document.createElement("option");
+      option.value = index;
+      option.textContent = `${index + 1}. ${step.title}`;
+      $("checkpoint").appendChild(option);
+    });
+
+    $("photo").addEventListener("error", () => {
+      $("image-error").textContent =
+        `Photo not found: ${route.steps[current].image}. ` +
+        "Check that the uploaded filename matches exactly.";
+      $("image-error").hidden = false;
+    });
+
+    function render() {
+      const step = route.steps[current];
+
+      $("image-error").hidden = true;
+      $("photo").alt = step.alt;
+      $("photo").src = step.image;
+      $("step-label").textContent = `Checkpoint ${current + 1}`;
+      $("step-title").textContent = step.title;
+      $("instruction").textContent = step.instruction;
+      $("landmark").textContent = step.landmark;
+      $("counter").textContent =
+        `${current + 1} of ${route.steps.length}`;
+      $("progress").value = current + 1;
+      $("checkpoint").value = current;
+
+      $("previous").disabled = current === 0;
+      $("next").disabled = current === route.steps.length - 1;
+      $("next").textContent =
+        current === route.steps.length - 1
+          ? "Last checkpoint"
+          : "Next →";
+
+      try {
+        localStorage.setItem(storageKey, current);
+      } catch {
+        // Saving progress is optional.
+      }
+    }
+
+    function move(change) {
+      const target = current + change;
+
+      if (
+        moving ||
+        target < 0 ||
+        target >= route.steps.length
+      ) {
+        return;
+      }
+
+      moving = true;
+      const reducedMotion =
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+      $("card").style.transform =
+        `translateX(${change > 0 ? "-30px" : "30px"})`;
+      $("card").style.opacity = "0";
+
+      setTimeout(() => {
+        current = target;
+        render();
+        $("card").style.transform = "";
+        $("card").style.opacity = "";
+        moving = false;
+      }, reducedMotion ? 0 : 160);
+    }
+
+    $("previous").addEventListener("click", () => move(-1));
+    $("next").addEventListener("click", () => move(1));
+
+    $("checkpoint").addEventListener("change", (event) => {
+      if (moving) {
+        $("checkpoint").value = current;
+        return;
+      }
+
+      current = Number(event.target.value);
+      render();
+    });
+
+    let touchStart = null;
+
+    $("card").addEventListener("touchstart", (event) => {
+      if (event.touches.length !== 1) {
+        touchStart = null;
+        return;
+      }
+
+      touchStart = {
+        x: event.touches[0].clientX,
+        y: event.touches[0].clientY
+      };
+    }, { passive: true });
+
+    $("card").addEventListener("touchend", (event) => {
+      if (!touchStart) return;
+
+      const dx = event.changedTouches[0].clientX - touchStart.x;
+      const dy = event.changedTouches[0].clientY - touchStart.y;
+      touchStart = null;
+
+      if (Math.abs(dx) > 65 && Math.abs(dx) > Math.abs(dy) * 1.4) {
+        suppressClickUntil = Date.now() + 500;
+        move(dx < 0 ? 1 : -1);
+      }
+    }, { passive: true });
+
+    $("card").addEventListener("touchcancel", () => {
+      touchStart = null;
+    }, { passive: true });
+
+    $("expand").addEventListener("click", () => {
+      if (moving || Date.now() < suppressClickUntil) return;
+
+      const step = route.steps[current];
+      $("large-photo").src = step.image;
+      $("large-photo").alt = step.alt;
+      $("viewer").showModal();
+    });
+
+    $("close-viewer").addEventListener("click", () => {
+      $("viewer").close();
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (
+        $("viewer").open ||
+        ["SELECT", "INPUT", "TEXTAREA"].includes(event.target.tagName)
+      ) {
+        return;
+      }
+
+      if (event.key === "ArrowRight") move(1);
+      if (event.key === "ArrowLeft") move(-1);
+    });
+
+    render();
+  </script>
+</body>
+</html>
