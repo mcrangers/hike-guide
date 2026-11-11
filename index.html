@@ -12,6 +12,7 @@
 
   <title>MC Rangers | Hike Guide</title>
 
+
   <style>
     :root {
       color-scheme: light;
@@ -328,6 +329,41 @@
         transition: none;
       }
     }
+
+      /* Let each photo determine its own height. */
+.photo-button {
+  background: transparent;
+  line-height: 0;
+}
+
+.photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: none;
+  aspect-ratio: auto;
+  object-fit: initial;
+}
+
+/* Keep the text on the photo readable. */
+.expand-hint {
+  line-height: 1.4;
+}
+
+/* Remove the green background in the enlarged viewer. */
+dialog {
+  background: #ffffff;
+}
+
+.large-photo {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 79svh;
+  margin: 0 auto;
+}
+    
   </style>
 </head>
 
