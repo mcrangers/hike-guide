@@ -43,9 +43,13 @@ self.addEventListener("message", event => {
       const urls = validateURLs(event.data.urls);
       const cache = await caches.open(CACHE_NAME);
 
-      if (event.data.type === "CHECK_GUIDE") {
-        let complete = true;
+      const ready = await sendRequest("CHECK_GUIDE");
 
+button.disabled = false;
+
+if (!ready && navigator.onLine) {
+  button.click();
+}
         for (const url of urls) {
           if (!(await cache.match(url))) {
             complete = false;
