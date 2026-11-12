@@ -787,8 +787,16 @@ get("next").textContent =
     });
 
     get("next").addEventListener("click", () => {
-      goToCheckpoint(currentIndex + 1);
-    });
+  const isLast =
+    currentIndex === checkpoints.length - 1;
+
+  if (isLast) {
+    window.location.href = "/";
+    return;
+  }
+
+  goToCheckpoint(currentIndex + 1);
+});
 
     get("restart").addEventListener("click", () => {
       goToCheckpoint(0, false);
