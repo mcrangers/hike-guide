@@ -466,8 +466,6 @@
     (() => {
       "use strict";
 
-      const HOME_URL = "https://mcrangers.org/";
-
       /*
         Keep photo filenames exactly as uploaded.
         Verify the route and checkpoint order before public use.
@@ -651,7 +649,7 @@
         get("next").disabled = false;
 
         get("next").textContent =
-          isLast ? "Back to home →" : "Next →";
+          isLast ? "Back to step 1 ↺" : "Next →";
 
         saveProgress();
       }
@@ -712,7 +710,8 @@
           currentIndex === checkpoints.length - 1;
 
         if (isLast) {
-          window.location.href = HOME_URL;
+          goToCheckpoint(0, false);
+          window.scrollTo(0, 0);
           return;
         }
 
@@ -852,7 +851,7 @@
 
       /*
         Silent offline saving.
-        Uses the CHECK_GUIDE and SAVE_GUIDE messages
+        Uses CHECK_GUIDE and SAVE_GUIDE messages
         supported by the existing hike-guide/sw.js.
       */
 
@@ -990,7 +989,7 @@
 
           offlineWorker = registration.active;
 
-          // Refresh the saved page and photos on an online visit.
+          // Refresh saved files during an online visit.
           await quietlySaveGuide(true);
         } catch (error) {
           console.warn(
