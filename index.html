@@ -383,12 +383,36 @@ dialog {
       </p>
     </header>
 
-    <aside class="notice">
-      Draft route: organiser verification required.
-      This guide does not track your location or provide
-      an offline download. Match photos to your surroundings
-      before continuing.
-    </aside>
+    <section
+  aria-label="Offline guide"
+  style="margin-bottom:20px"
+>
+  <button
+    class="text-button"
+    id="save-offline"
+    type="button"
+    disabled
+    style="width:100%;background:#e1eadd;font-weight:700"
+  >
+    Preparing offline download…
+  </button>
+
+  <p
+    id="offline-status"
+    role="status"
+    aria-live="polite"
+    style="margin:10px 0 0;color:#667568;font-size:12px;line-height:1.6"
+  >
+    Save this guide while online before setting off.
+  </p>
+
+  <p
+    style="margin:8px 0 0;color:#667568;font-size:11px;line-height:1.6"
+  >
+    Photo reference only—not GPS. Match each photo
+    to your surroundings before continuing.
+  </p>
+</section>
 
     <div class="toolbar">
       <p
@@ -872,5 +896,153 @@ dialog {
 
     renderCheckpoint();
   </script>
+
+  <script>
+  (() => {
+    "use strict";
+
+    const button = document.getElementById("save-offline");
+    const status = document.getElementById("offline-status");
+
+    let worker;
+    let saving = false;
+
+    const files = [
+      new URL("index.html", document.baseURI).href,
+      ...checkpoints.map(checkpoint =>
+        new URL(checkpoint.image, document.baseURI).href
+      )
+    ];
+
+    function sendRequest(type) {
+      return new Promise((resolve, reject) => {
+        const channel = new MessageChannel();
+
+        let timeout;
+
+        function finish(error, result) {
+          clearTimeout(timeout);
+          channel.port1.close();
+
+          if (error) {
+            reject(error);
+          } else {
+            resolve(result);
+          }
+        }
+
+        function resetTimeout() {
+          clearTimeout(timeout);
+
+          timeout = setTimeout(() => {
+            finish(new Error("Download timed out. Please retry."));
+          }, 90000);
+        }
+
+        channel.port1.onmessage = event => {
+          resetTimeout();
+
+          const data = event.data;
+
+          if (data.type === "PROGRESS") {
+            status.textContent =
+              `Saving guide files: ${data.completed} / ${data.total}. ` +
+              "Keep this page open.";
+          }
+
+          if (data.type === "DONE") {
+            finish(null, true);
+          }
+
+          if (data.type === "STATUS") {
+            finish(null, data.ready);
+          }
+
+          if (data.type === "ERROR") {
+            finish(new Error(data.message));
+          }
+        };
+
+        resetTimeout();
+
+        worker.postMessage(
+          { type, urls: files },
+          [channel.port2]
+        );
+      });
+    }
+
+    async function prepare() {
+      if (!("serviceWorker" in navigator)) {
+        button.textContent = "Offline saving unavailable";
+        status.textContent =
+          "This browser does not support offline saving. " +
+          "Use a supported browser while online.";
+        return;
+      }
+
+      try {
+        await navigator.serviceWorker.register("./sw.js");
+
+        const registration = await navigator.serviceWorker.ready;
+
+        worker = registration.active;
+
+        if (!worker) {
+          throw new Error("Offline worker is not ready.");
+        }
+
+        const ready = await sendRequest("CHECK_GUIDE");
+
+        button.disabled = false;
+
+        button.textContent = ready
+          ? "Update offline guide"
+          : "Save guide for offline";
+
+        status.textContent = ready
+          ? "Ready offline on this browser. Test it in Airplane Mode before setting off."
+          : "Downloads the guide and every checkpoint photo. Use Wi-Fi and keep this page open.";
+      } catch {
+        button.textContent = "Reload to enable offline saving";
+        status.textContent =
+          "Could not prepare offline saving. Check your connection and reload.";
+      }
+    }
+
+    button.addEventListener("click", async () => {
+      if (saving || !worker) return;
+
+      saving = true;
+      button.disabled = true;
+      button.textContent = "Saving…";
+
+      status.textContent =
+        "Downloading the guide and all checkpoint photos. Keep this page open.";
+
+      try {
+        await sendRequest("SAVE_GUIDE");
+
+        button.textContent = "Update offline guide";
+
+        status.textContent =
+          "Ready offline on this browser. All checkpoint photos are saved. " +
+          "Test it in Airplane Mode before setting off.";
+      } catch (error) {
+        button.textContent = "Retry offline download";
+
+        status.textContent =
+          "Download incomplete—do not rely on offline access yet. " +
+          error.message;
+      } finally {
+        saving = false;
+        button.disabled = false;
+      }
+    });
+
+    prepare();
+  })();
+</script>
+  
 </body>
 </html>
