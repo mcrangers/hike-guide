@@ -726,13 +726,13 @@ dialog {
 
       get("previous").disabled = currentIndex === 0;
 
-      const isLast =
-        currentIndex === checkpoints.length - 1;
+       const isLast =
+  currentIndex === checkpoints.length - 1;
 
-      get("next").disabled = isLast;
+get("next").disabled = false;
 
-      get("next").textContent =
-        isLast ? "Last checkpoint" : "Next →";
+get("next").textContent =
+  isLast ? "Back to main site →" : "Next →";
 
       saveProgress();
     }
