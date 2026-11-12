@@ -12,7 +12,6 @@
 
   <title>MC Rangers | Hike Guide</title>
 
-
   <style>
     :root {
       color-scheme: light;
@@ -33,8 +32,10 @@
       background: var(--background);
       color: var(--green);
       font-family:
-        -apple-system, BlinkMacSystemFont,
-        "Segoe UI", sans-serif;
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        sans-serif;
     }
 
     button,
@@ -48,7 +49,8 @@
     }
 
     button:focus-visible,
-    select:focus-visible {
+    select:focus-visible,
+    a:focus-visible {
       outline: 3px solid #c69632;
       outline-offset: 4px;
     }
@@ -93,17 +95,6 @@
       font-size: 14px;
     }
 
-    .notice {
-      margin-bottom: 20px;
-      padding: 12px 14px;
-      border: 1px solid #eadbb6;
-      border-radius: 14px;
-      background: #fff6e2;
-      color: #745722;
-      font-size: 12px;
-      line-height: 1.6;
-    }
-
     .toolbar {
       display: flex;
       align-items: center;
@@ -119,6 +110,9 @@
     }
 
     .text-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       min-height: 44px;
       padding: 8px 12px;
       border: 1px solid var(--border);
@@ -126,6 +120,8 @@
       background: transparent;
       color: var(--green);
       font-size: 12px;
+      text-decoration: none;
+      white-space: nowrap;
     }
 
     progress {
@@ -154,15 +150,16 @@
       width: 100%;
       padding: 0;
       border: 0;
-      background: #15251d;
+      background: transparent;
+      line-height: 0;
       cursor: zoom-in;
     }
 
     .photo {
       display: block;
       width: 100%;
-      height: clamp(320px, 55svh, 650px);
-      object-fit: contain;
+      height: auto;
+      max-height: none;
       user-select: none;
       -webkit-user-select: none;
     }
@@ -176,6 +173,7 @@
       background: #0009;
       color: white;
       font-size: 10px;
+      line-height: 1.4;
       pointer-events: none;
     }
 
@@ -295,7 +293,7 @@
       padding: 12px;
       border: 0;
       border-radius: 18px;
-      background: #15251d;
+      background: white;
     }
 
     dialog::backdrop {
@@ -309,14 +307,17 @@
       padding: 10px 18px;
       border: 0;
       border-radius: 10px;
-      background: white;
+      background: var(--green-light);
       color: var(--green);
     }
 
     .large-photo {
       display: block;
-      width: 100%;
+      width: auto;
+      height: auto;
+      max-width: 100%;
       max-height: 79svh;
+      margin: 0 auto;
       object-fit: contain;
     }
 
@@ -329,64 +330,12 @@
         transition: none;
       }
     }
-
-      /* Let each photo determine its own height. */
-.photo-button {
-  background: transparent;
-  line-height: 0;
-}
-
-.photo {
-  display: block;
-  width: 100%;
-  height: auto;
-  max-height: none;
-  aspect-ratio: auto;
-  object-fit: initial;
-}
-
-/* Keep the text on the photo readable. */
-.expand-hint {
-  line-height: 1.4;
-}
-
-/* Remove the green background in the enlarged viewer. */
-dialog {
-  background: #ffffff;
-}
-
-.large-photo {
-  display: block;
-  width: auto;
-  height: auto;
-  max-width: 100%;
-  max-height: 79svh;
-  margin: 0 auto;
-}
-    
   </style>
 </head>
 
 <body>
   <main class="app">
-
     <header>
-      <header>
-  <a
-    href="/"
-    style="
-      display: inline-block;
-      margin-bottom: 16px;
-      padding: 8px 0;
-      color: #183c30;
-      font-size: 13px;
-      text-decoration: none;
-    "
-  >
-    ← Back to main site
-  </a>
-
-  <div class="topbar">
       <div class="topbar">
         <p class="brand">MC RANGERS</p>
         <span class="tag">PHOTO GUIDE</span>
@@ -399,37 +348,6 @@ dialog {
       </p>
     </header>
 
-    <section
-  aria-label="Offline guide"
-  hidden
->
-  <button
-    class="text-button"
-    id="save-offline"
-    type="button"
-    disabled
-    style="width:100%;background:#e1eadd;font-weight:700"
-  >
-    Preparing offline download…
-  </button>
-
-  <p
-    id="offline-status"
-    role="status"
-    aria-live="polite"
-    style="margin:10px 0 0;color:#667568;font-size:12px;line-height:1.6"
-  >
-    Save this guide while online before setting off.
-  </p>
-
-  <p
-    style="margin:8px 0 0;color:#667568;font-size:11px;line-height:1.6"
-  >
-    Photo reference only—not GPS. Match each photo
-    to your surroundings before continuing.
-  </p>
-</section>
-
     <div class="toolbar">
       <p
         class="checkpoint-count"
@@ -437,13 +355,12 @@ dialog {
         aria-live="polite"
       ></p>
 
-      <button
+      <a
         class="text-button"
-        id="restart"
-        type="button"
+        href="https://mcrangers.org/"
       >
-        Back to start
-      </button>
+        Back to home
+      </a>
     </div>
 
     <progress
@@ -452,7 +369,6 @@ dialog {
     ></progress>
 
     <article class="card" id="card">
-
       <button
         class="photo-button"
         id="expand-photo"
@@ -462,7 +378,6 @@ dialog {
         <img
           class="photo"
           id="photo"
-          src=""
           alt=""
           draggable="false"
         >
@@ -485,7 +400,6 @@ dialog {
         <p class="description" id="step-description"></p>
         <p class="landmark" id="step-landmark"></p>
       </div>
-
     </article>
 
     <nav
@@ -523,9 +437,10 @@ dialog {
     <footer class="footer">
       Your last viewed checkpoint is saved on this browser
       when storage is available.<br>
+      Photo reference only—not GPS.
+      Match photos to your surroundings.<br>
       Viewed checkpoint ≠ confirmed location.
     </footer>
-
   </main>
 
   <dialog
@@ -540,533 +455,570 @@ dialog {
       Close
     </button>
 
-    <img class="large-photo" id="large-photo" alt="">
+    <img
+      class="large-photo"
+      id="large-photo"
+      alt=""
+    >
   </dialog>
 
   <script>
-    /*
-      EDIT YOUR ROUTE HERE.
+    (() => {
+      "use strict";
 
-      Cards appear in this array's order.
-      Keep photo filenames exactly as uploaded.
-      Directions below describe the supplied annotations.
-      Verify them and the sequence before public use.
-    */
+      const HOME_URL = "https://mcrangers.org/";
 
-    const checkpoints = [
-      {
-        image: "photos/step1.jpg",
-        title: "Follow the pavement",
-        description:
-          "Follow the white arrows along the pavement shown in the photo.",
-        landmark:
-          "Match the shops on the right and the hillside ahead."
-      },
-      {
-        image: "photos/step2.jpg",
-        title: "Find the entrance",
-        description:
-          "Look for the entrance marked by the arrows, then confirm the access towards the stairs.",
-        landmark:
-          "Match the tall building on the left and the low white building on the right."
-      },
-      {
-        image: "photos/step3.jpg",
-        title: "Up the stairs",
-        description:
-          "The arrows mark the staircase with green handrails. Match it to your surroundings before heading up.",
-        landmark:
-          "Look for the white retaining wall beside the staircase."
-      },
-      {
-        image: "photos/step4.jpg",
-        title: "A few more stairs",
-        description:
-          "Continue along the staircase marked in the wooded area.",
-        landmark:
-          "Match the curved handrails and the steps rising through the trees."
-      },
-      {
-        image: "photos/step5.jpg",
-        title: "Take a breather",
-        description:
-          "Your photo marks this pavilion area as a place to rest.",
-        landmark:
-          "Look for the pavilion beside the grassy clearing."
-      },
-      {
-        image: "photos/step6.jpg",
-        title: "On we go",
-        description:
-          "The arrows show the way out of the rest area towards the paved road.",
-        landmark:
-          "Match the stone path, roadside posts and tall grass."
-      },
-      {
-        image: "photos/step7.jpg",
-        title: "Dragon’s Back sign",
-        description:
-          "Find the wooden Dragon’s Back sign shown in the photo.",
-        landmark:
-          "Match the left-pointing sign and the surrounding path."
-      },
-      {
-        image: "photos/step8.jpg",
-        title: "Steps at the junction",
-        description:
-          "The annotations point up the steps beside the Dragon’s Back signpost.",
-        landmark:
-          "Check this junction and its position in the route with your organiser."
-      },
-      {
-        image: "photos/step9.jpg",
-        title: "Towards Shek O Road",
-        description:
-          "The annotations mark the direction towards Shek O Road at this junction.",
-        landmark:
-          "Match the signpost and railing. Confirm this checkpoint’s position in the sequence."
-      },
-      {
-        image: "photos/step10.jpg",
-        title: "Left towards Shek O Road",
-        description:
-          "Your annotation says to take the left-hand direction towards Shek O Road.",
-        landmark:
-          "Match the sign showing Shek O Road to the left and Tai Tam Gap to the right."
-      },
-      {
-        image: "photos/step11.jpg",
-        title: "Keep following Shek O Road",
-        description:
-          "The circled sign and arrows mark the direction towards Shek O Road.",
-        landmark:
-          "Match the sign with Dragon’s Back pointing left and Shek O Road pointing right."
-      },
-      {
-        image: "photos/step12.jpg",
-        title: "You made it",
-        description:
-          "This photo marks the roadside bus stop at the end of your guide.",
-        landmark:
-          "Your annotation mentions bus 9 to Shek O. Check current service and travel direction separately."
-      }
-    ];
+      /*
+        Keep photo filenames exactly as uploaded.
+        Verify the route and checkpoint order before public use.
+      */
+      const checkpoints = [
+        {
+          image: "photos/step1.jpg",
+          title: "Follow the pavement",
+          description:
+            "Follow the white arrows along the pavement shown in the photo.",
+          landmark:
+            "Match the shops on the right and the hillside ahead."
+        },
+        {
+          image: "photos/step2.jpg",
+          title: "Find the entrance",
+          description:
+            "Look for the entrance marked by the arrows, then confirm the access towards the stairs.",
+          landmark:
+            "Match the tall building on the left and the low white building on the right."
+        },
+        {
+          image: "photos/step3.jpg",
+          title: "Up the stairs",
+          description:
+            "The arrows mark the staircase with green handrails. Match it to your surroundings before heading up.",
+          landmark:
+            "Look for the white retaining wall beside the staircase."
+        },
+        {
+          image: "photos/step4.jpg",
+          title: "A few more stairs",
+          description:
+            "Continue along the staircase marked in the wooded area.",
+          landmark:
+            "Match the curved handrails and the steps rising through the trees."
+        },
+        {
+          image: "photos/step5.jpg",
+          title: "Take a breather",
+          description:
+            "Your photo marks this pavilion area as a place to rest.",
+          landmark:
+            "Look for the pavilion beside the grassy clearing."
+        },
+        {
+          image: "photos/step6.jpg",
+          title: "On we go",
+          description:
+            "The arrows show the way out of the rest area towards the paved road.",
+          landmark:
+            "Match the stone path, roadside posts and tall grass."
+        },
+        {
+          image: "photos/step7.jpg",
+          title: "Dragon’s Back sign",
+          description:
+            "Find the wooden Dragon’s Back sign shown in the photo.",
+          landmark:
+            "Match the left-pointing sign and the surrounding path."
+        },
+        {
+          image: "photos/step8.jpg",
+          title: "Steps at the junction",
+          description:
+            "The annotations point up the steps beside the Dragon’s Back signpost.",
+          landmark:
+            "Check this junction and its position in the route with your organiser."
+        },
+        {
+          image: "photos/step9.jpg",
+          title: "Towards Shek O Road",
+          description:
+            "The annotations mark the direction towards Shek O Road at this junction.",
+          landmark:
+            "Match the signpost and railing. Confirm this checkpoint’s position in the sequence."
+        },
+        {
+          image: "photos/step10.jpg",
+          title: "Left towards Shek O Road",
+          description:
+            "Your annotation says to take the left-hand direction towards Shek O Road.",
+          landmark:
+            "Match the sign showing Shek O Road to the left and Tai Tam Gap to the right."
+        },
+        {
+          image: "photos/step11.jpg",
+          title: "Keep following Shek O Road",
+          description:
+            "The circled sign and arrows mark the direction towards Shek O Road.",
+          landmark:
+            "Match the sign with Dragon’s Back pointing left and Shek O Road pointing right."
+        },
+        {
+          image: "photos/step12.jpg",
+          title: "You made it",
+          description:
+            "This photo marks the roadside bus stop at the end of your guide.",
+          landmark:
+            "Your annotation mentions bus 9 to Shek O. Check current service and travel direction separately."
+        }
+      ];
 
-    const get = (id) => document.getElementById(id);
+      const get = id => document.getElementById(id);
+      const storageKey = "mc-rangers-photo-guide-v3";
 
-    const storageKey = "mc-rangers-photo-guide-v3";
+      let currentIndex = 0;
+      let isMoving = false;
+      let touchStart = null;
+      let suppressClickUntil = 0;
 
-    let currentIndex = 0;
-    let isMoving = false;
-    let touchStart = null;
-    let suppressClickUntil = 0;
-
-    try {
-      const savedIndex = Number(
-        localStorage.getItem(storageKey)
-      );
-
-      if (
-        Number.isInteger(savedIndex) &&
-        savedIndex >= 0 &&
-        savedIndex < checkpoints.length
-      ) {
-        currentIndex = savedIndex;
-      }
-    } catch {
-      // Browsing still works without saved progress.
-    }
-
-    checkpoints.forEach((checkpoint, index) => {
-      const option = document.createElement("option");
-
-      option.value = index;
-      option.textContent =
-        `${index + 1}. ${checkpoint.title}`;
-
-      get("checkpoint-select").appendChild(option);
-    });
-
-    function saveProgress() {
       try {
-        localStorage.setItem(storageKey, currentIndex);
+        const savedIndex = Number(
+          localStorage.getItem(storageKey)
+        );
+
+        if (
+          Number.isInteger(savedIndex) &&
+          savedIndex >= 0 &&
+          savedIndex < checkpoints.length
+        ) {
+          currentIndex = savedIndex;
+        }
       } catch {
-        // Storage is optional.
-      }
-    }
-
-    function renderCheckpoint() {
-      const checkpoint = checkpoints[currentIndex];
-
-      get("photo-error").hidden = true;
-
-      get("photo").alt =
-        `Checkpoint ${currentIndex + 1}: ${checkpoint.title}`;
-
-      get("photo").src = checkpoint.image;
-
-      get("step-number").textContent =
-        `Checkpoint ${String(currentIndex + 1).padStart(2, "0")}`;
-
-      get("step-title").textContent = checkpoint.title;
-
-      get("step-description").textContent =
-        checkpoint.description;
-
-      get("step-landmark").textContent =
-        checkpoint.landmark;
-
-      get("checkpoint-count").textContent =
-        `${currentIndex + 1} / ${checkpoints.length} checkpoints`;
-
-      get("progress").max = checkpoints.length;
-      get("progress").value = currentIndex + 1;
-
-      get("checkpoint-select").value = currentIndex;
-
-      get("previous").disabled = currentIndex === 0;
-
-       const isLast =
-  currentIndex === checkpoints.length - 1;
-
-get("next").disabled = false;
-
-get("next").textContent =
-  isLast ? "Back to main site →" : "Next →";
-
-      saveProgress();
-    }
-
-    function goToCheckpoint(targetIndex, animate = true) {
-      if (
-        isMoving ||
-        targetIndex < 0 ||
-        targetIndex >= checkpoints.length ||
-        targetIndex === currentIndex
-      ) {
-        return;
+        // Browsing still works without saved progress.
       }
 
-      const reducedMotion = window.matchMedia(
-        "(prefers-reduced-motion: reduce)"
-      ).matches;
+      checkpoints.forEach((checkpoint, index) => {
+        const option = document.createElement("option");
 
-      if (!animate || reducedMotion) {
-        currentIndex = targetIndex;
-        renderCheckpoint();
-        return;
+        option.value = index;
+        option.textContent =
+          `${index + 1}. ${checkpoint.title}`;
+
+        get("checkpoint-select").appendChild(option);
+      });
+
+      function saveProgress() {
+        try {
+          localStorage.setItem(storageKey, currentIndex);
+        } catch {
+          // Storage is optional.
+        }
       }
 
-      isMoving = true;
+      function renderCheckpoint() {
+        const checkpoint = checkpoints[currentIndex];
 
-      const direction =
-        targetIndex > currentIndex ? -1 : 1;
+        get("photo-error").hidden = true;
 
-      const card = get("card");
+        get("photo").alt =
+          `Checkpoint ${currentIndex + 1}: ${checkpoint.title}`;
 
-      card.style.transform =
-        `translateX(${direction * 25}px)`;
+        get("photo").src = checkpoint.image;
 
-      card.style.opacity = "0";
+        get("step-number").textContent =
+          `Checkpoint ${String(currentIndex + 1).padStart(2, "0")}`;
 
-      setTimeout(() => {
-        currentIndex = targetIndex;
-        renderCheckpoint();
+        get("step-title").textContent =
+          checkpoint.title;
 
-        card.style.transform = "";
-        card.style.opacity = "";
+        get("step-description").textContent =
+          checkpoint.description;
+
+        get("step-landmark").textContent =
+          checkpoint.landmark;
+
+        get("checkpoint-count").textContent =
+          `${currentIndex + 1} / ${checkpoints.length} checkpoints`;
+
+        get("progress").max = checkpoints.length;
+        get("progress").value = currentIndex + 1;
+
+        get("checkpoint-select").value = currentIndex;
+
+        get("previous").disabled = currentIndex === 0;
+
+        const isLast =
+          currentIndex === checkpoints.length - 1;
+
+        get("next").disabled = false;
+
+        get("next").textContent =
+          isLast ? "Back to home →" : "Next →";
+
+        saveProgress();
+      }
+
+      function goToCheckpoint(targetIndex, animate = true) {
+        if (
+          isMoving ||
+          targetIndex < 0 ||
+          targetIndex >= checkpoints.length ||
+          targetIndex === currentIndex
+        ) {
+          return;
+        }
+
+        const reducedMotion = window.matchMedia(
+          "(prefers-reduced-motion: reduce)"
+        ).matches;
+
+        if (!animate || reducedMotion) {
+          currentIndex = targetIndex;
+          renderCheckpoint();
+          return;
+        }
+
+        isMoving = true;
+
+        const direction =
+          targetIndex > currentIndex ? -1 : 1;
+
+        const card = get("card");
+
+        card.style.transform =
+          `translateX(${direction * 25}px)`;
+
+        card.style.opacity = "0";
 
         setTimeout(() => {
-          isMoving = false;
+          currentIndex = targetIndex;
+          renderCheckpoint();
+
+          card.style.transform = "";
+          card.style.opacity = "";
+
+          setTimeout(() => {
+            isMoving = false;
+          }, 160);
         }, 160);
-      }, 160);
-    }
-
-    get("previous").addEventListener("click", () => {
-      goToCheckpoint(currentIndex - 1);
-    });
-
-    get("next").addEventListener("click", () => {
-  const isLast =
-    currentIndex === checkpoints.length - 1;
-
-  if (isLast) {
-    window.location.href = "/";
-    return;
-  }
-
-  goToCheckpoint(currentIndex + 1);
-});
-
-    get("restart").addEventListener("click", () => {
-      goToCheckpoint(0, false);
-    });
-
-    get("checkpoint-select").addEventListener(
-      "change",
-      (event) => {
-        if (isMoving) {
-          event.target.value = currentIndex;
-          return;
-        }
-
-        goToCheckpoint(Number(event.target.value), false);
-      }
-    );
-
-    get("photo").addEventListener("error", () => {
-      const filename =
-        checkpoints[currentIndex].image;
-
-      get("photo-error").textContent =
-        `Could not load ${filename}. ` +
-        "Check your connection and make sure the photo " +
-        "is uploaded with exactly this filename.";
-
-      get("photo-error").hidden = false;
-    });
-
-    get("card").addEventListener(
-      "touchstart",
-      (event) => {
-        if (event.touches.length !== 1) {
-          touchStart = null;
-          return;
-        }
-
-        touchStart = {
-          x: event.touches[0].clientX,
-          y: event.touches[0].clientY
-        };
-      },
-      { passive: true }
-    );
-
-    get("card").addEventListener(
-      "touchend",
-      (event) => {
-        if (!touchStart) return;
-
-        const touch = event.changedTouches[0];
-
-        const distanceX = touch.clientX - touchStart.x;
-        const distanceY = touch.clientY - touchStart.y;
-
-        touchStart = null;
-
-        const horizontalSwipe =
-          Math.abs(distanceX) > 65 &&
-          Math.abs(distanceX) > Math.abs(distanceY) * 1.4;
-
-        if (!horizontalSwipe) return;
-
-        suppressClickUntil = Date.now() + 500;
-
-        goToCheckpoint(
-          currentIndex + (distanceX < 0 ? 1 : -1)
-        );
-      },
-      { passive: true }
-    );
-
-    get("card").addEventListener(
-      "touchcancel",
-      () => {
-        touchStart = null;
-      },
-      { passive: true }
-    );
-
-    get("expand-photo").addEventListener("click", () => {
-      if (
-        isMoving ||
-        Date.now() < suppressClickUntil
-      ) {
-        return;
       }
 
-      const checkpoint = checkpoints[currentIndex];
-
-      get("large-photo").src = checkpoint.image;
-      get("large-photo").alt = checkpoint.title;
-
-      get("photo-viewer").showModal();
-    });
-
-    get("close-viewer").addEventListener("click", () => {
-      get("photo-viewer").close();
-    });
-
-    document.addEventListener("keydown", (event) => {
-      if (
-        get("photo-viewer").open ||
-        ["SELECT", "INPUT", "TEXTAREA"].includes(
-          event.target.tagName
-        )
-      ) {
-        return;
-      }
-
-      if (event.key === "ArrowRight") {
-        event.preventDefault();
-        goToCheckpoint(currentIndex + 1);
-      }
-
-      if (event.key === "ArrowLeft") {
-        event.preventDefault();
+      get("previous").addEventListener("click", () => {
         goToCheckpoint(currentIndex - 1);
-      }
-    });
+      });
 
-    renderCheckpoint();
-  </script>
+      get("next").addEventListener("click", () => {
+        if (isMoving) return;
 
-  <script>
-  (() => {
-    "use strict";
+        const isLast =
+          currentIndex === checkpoints.length - 1;
 
-    const button = document.getElementById("save-offline");
-    const status = document.getElementById("offline-status");
+        if (isLast) {
+          window.location.href = HOME_URL;
+          return;
+        }
 
-    let worker;
-    let saving = false;
+        goToCheckpoint(currentIndex + 1);
+      });
 
-    const files = [
-      new URL("index.html", document.baseURI).href,
-      ...checkpoints.map(checkpoint =>
-        new URL(checkpoint.image, document.baseURI).href
-      )
-    ];
-
-    function sendRequest(type) {
-      return new Promise((resolve, reject) => {
-        const channel = new MessageChannel();
-
-        let timeout;
-
-        function finish(error, result) {
-          clearTimeout(timeout);
-          channel.port1.close();
-
-          if (error) {
-            reject(error);
-          } else {
-            resolve(result);
+      get("checkpoint-select").addEventListener(
+        "change",
+        event => {
+          if (isMoving) {
+            event.target.value = currentIndex;
+            return;
           }
+
+          goToCheckpoint(
+            Number(event.target.value),
+            false
+          );
+        }
+      );
+
+      get("photo").addEventListener("error", () => {
+        const filename =
+          checkpoints[currentIndex].image;
+
+        get("photo-error").textContent =
+          `Could not load ${filename}. ` +
+          "Connect to the internet and reload the guide, " +
+          "or check that the photo is uploaded with exactly this filename.";
+
+        get("photo-error").hidden = false;
+      });
+
+      get("card").addEventListener(
+        "touchstart",
+        event => {
+          if (event.touches.length !== 1) {
+            touchStart = null;
+            return;
+          }
+
+          touchStart = {
+            x: event.touches[0].clientX,
+            y: event.touches[0].clientY
+          };
+        },
+        { passive: true }
+      );
+
+      get("card").addEventListener(
+        "touchend",
+        event => {
+          if (!touchStart) return;
+
+          const touch = event.changedTouches[0];
+
+          const distanceX =
+            touch.clientX - touchStart.x;
+
+          const distanceY =
+            touch.clientY - touchStart.y;
+
+          touchStart = null;
+
+          const horizontalSwipe =
+            Math.abs(distanceX) > 65 &&
+            Math.abs(distanceX) > Math.abs(distanceY) * 1.4;
+
+          if (!horizontalSwipe) return;
+
+          suppressClickUntil = Date.now() + 500;
+
+          goToCheckpoint(
+            currentIndex + (distanceX < 0 ? 1 : -1)
+          );
+        },
+        { passive: true }
+      );
+
+      get("card").addEventListener(
+        "touchcancel",
+        () => {
+          touchStart = null;
+        },
+        { passive: true }
+      );
+
+      get("expand-photo").addEventListener(
+        "click",
+        () => {
+          if (
+            isMoving ||
+            Date.now() < suppressClickUntil
+          ) {
+            return;
+          }
+
+          const checkpoint =
+            checkpoints[currentIndex];
+
+          get("large-photo").src = checkpoint.image;
+          get("large-photo").alt = checkpoint.title;
+
+          get("photo-viewer").showModal();
+        }
+      );
+
+      get("close-viewer").addEventListener(
+        "click",
+        () => {
+          get("photo-viewer").close();
+        }
+      );
+
+      document.addEventListener("keydown", event => {
+        if (
+          get("photo-viewer").open ||
+          ["SELECT", "INPUT", "TEXTAREA", "BUTTON", "A"].includes(
+            event.target.tagName
+          )
+        ) {
+          return;
         }
 
-        function resetTimeout() {
-          clearTimeout(timeout);
-
-          timeout = setTimeout(() => {
-            finish(new Error("Download timed out. Please retry."));
-          }, 90000);
+        if (event.key === "ArrowRight") {
+          event.preventDefault();
+          goToCheckpoint(currentIndex + 1);
         }
 
-        channel.port1.onmessage = event => {
+        if (event.key === "ArrowLeft") {
+          event.preventDefault();
+          goToCheckpoint(currentIndex - 1);
+        }
+      });
+
+      renderCheckpoint();
+
+      /*
+        Silent offline saving.
+        Uses the CHECK_GUIDE and SAVE_GUIDE messages
+        supported by the existing hike-guide/sw.js.
+      */
+
+      let offlineWorker = null;
+      let offlineTaskRunning = false;
+
+      const offlineFiles = [
+        new URL("index.html", document.baseURI).href,
+        ...checkpoints.map(checkpoint =>
+          new URL(
+            checkpoint.image,
+            document.baseURI
+          ).href
+        )
+      ];
+
+      function sendOfflineRequest(type) {
+        return new Promise((resolve, reject) => {
+          const channel = new MessageChannel();
+
+          let timeout;
+          let finished = false;
+
+          function finish(error, result) {
+            if (finished) return;
+
+            finished = true;
+            clearTimeout(timeout);
+            channel.port1.close();
+
+            if (error) {
+              reject(error);
+            } else {
+              resolve(result);
+            }
+          }
+
+          function resetTimeout() {
+            clearTimeout(timeout);
+
+            timeout = setTimeout(() => {
+              finish(
+                new Error("Offline saving timed out.")
+              );
+            }, 90000);
+          }
+
+          channel.port1.onmessage = event => {
+            resetTimeout();
+
+            const data = event.data;
+
+            if (data.type === "DONE") {
+              finish(null, true);
+            } else if (data.type === "STATUS") {
+              finish(null, data.ready);
+            } else if (data.type === "ERROR") {
+              finish(
+                new Error(
+                  data.message || "Offline saving failed."
+                )
+              );
+            }
+          };
+
           resetTimeout();
 
-          const data = event.data;
-
-          if (data.type === "PROGRESS") {
-            status.textContent =
-              `Saving guide files: ${data.completed} / ${data.total}. ` +
-              "Keep this page open.";
+          try {
+            offlineWorker.postMessage(
+              {
+                type,
+                urls: offlineFiles
+              },
+              [channel.port2]
+            );
+          } catch (error) {
+            finish(error);
           }
-
-          if (data.type === "DONE") {
-            finish(null, true);
-          }
-
-          if (data.type === "STATUS") {
-            finish(null, data.ready);
-          }
-
-          if (data.type === "ERROR") {
-            finish(new Error(data.message));
-          }
-        };
-
-        resetTimeout();
-
-        worker.postMessage(
-          { type, urls: files },
-          [channel.port2]
-        );
-      });
-    }
-
-    async function prepare() {
-      if (!("serviceWorker" in navigator)) {
-        button.textContent = "Offline saving unavailable";
-        status.textContent =
-          "This browser does not support offline saving. " +
-          "Use a supported browser while online.";
-        return;
+        });
       }
 
-      try {
-        await navigator.serviceWorker.register("./sw.js");
-
-        const registration = await navigator.serviceWorker.ready;
-
-        worker = registration.active;
-
-        if (!worker) {
-          throw new Error("Offline worker is not ready.");
+      async function quietlySaveGuide(refresh = false) {
+        if (
+          offlineTaskRunning ||
+          !offlineWorker ||
+          !navigator.onLine
+        ) {
+          return;
         }
 
-        const ready = await sendRequest("CHECK_GUIDE");
+        offlineTaskRunning = true;
 
-        button.disabled = false;
+        try {
+          const ready = await sendOfflineRequest(
+            "CHECK_GUIDE"
+          );
 
-        button.textContent = ready
-          ? "Update offline guide"
-          : "Save guide for offline";
-
-        status.textContent = ready
-          ? "Ready offline on this browser. Test it in Airplane Mode before setting off."
-          : "Downloads the guide and every checkpoint photo. Use Wi-Fi and keep this page open.";
-      } catch {
-        button.textContent = "Reload to enable offline saving";
-        status.textContent =
-          "Could not prepare offline saving. Check your connection and reload.";
+          if (!ready || refresh) {
+            await sendOfflineRequest("SAVE_GUIDE");
+          }
+        } catch (error) {
+          console.warn(
+            "Photo guide offline saving:",
+            error.message
+          );
+        } finally {
+          offlineTaskRunning = false;
+        }
       }
-    }
 
-    button.addEventListener("click", async () => {
-      if (saving || !worker) return;
+      async function prepareOfflineGuide() {
+        if (!("serviceWorker" in navigator)) {
+          return;
+        }
 
-      saving = true;
-      button.disabled = true;
-      button.textContent = "Saving…";
+        try {
+          await navigator.serviceWorker.register(
+            "./sw.js"
+          );
 
-      status.textContent =
-        "Downloading the guide and all checkpoint photos. Keep this page open.";
+          const registration =
+            await navigator.serviceWorker.ready;
 
-      try {
-        await sendRequest("SAVE_GUIDE");
+          const expectedScope = new URL(
+            "./",
+            document.baseURI
+          ).href;
 
-        button.textContent = "Update offline guide";
+          if (
+            registration.scope !== expectedScope ||
+            !registration.active
+          ) {
+            return;
+          }
 
-        status.textContent =
-          "Ready offline on this browser. All checkpoint photos are saved. " +
-          "Test it in Airplane Mode before setting off.";
-      } catch (error) {
-        button.textContent = "Retry offline download";
+          offlineWorker = registration.active;
 
-        status.textContent =
-          "Download incomplete—do not rely on offline access yet. " +
-          error.message;
-      } finally {
-        saving = false;
-        button.disabled = false;
+          // Refresh the saved page and photos on an online visit.
+          await quietlySaveGuide(true);
+        } catch (error) {
+          console.warn(
+            "Photo guide offline setup:",
+            error.message
+          );
+        }
       }
-    });
 
-    prepare();
-  })();
-</script>
-  
+      window.addEventListener("online", () => {
+        if (offlineWorker) {
+          quietlySaveGuide(true);
+        } else {
+          prepareOfflineGuide();
+        }
+      });
+
+      document.addEventListener(
+        "visibilitychange",
+        () => {
+          if (!document.hidden) {
+            quietlySaveGuide();
+          }
+        }
+      );
+
+      prepareOfflineGuide();
+    })();
+  </script>
 </body>
 </html>
